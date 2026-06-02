@@ -1,0 +1,41 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Global Safety Net default-deny gate
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Helper functions for Attribute-Based Access Control and Schema Validation
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isValidRoom(data) {
+      return data.roomCode is string 
+          && data.roomCode.size() <= 128
+          && data.gameScreenState is string
+          && data.gameScreenState.size() <= 64;
+    }
+
+    // Classroom Sessions collection matching
+    match /rooms/{roomCode} {
+      // Allow single document retrieval (not full list queries) for secure direct room code routing.
+      allow get: if isValidId(roomCode);
+      
+      // Allow creation/updates of classroom rooms if the document structure is valid.
+      allow create, update: if isValidId(roomCode) && isValidRoom(incoming());
+
+      // No deletes allowed by client-side application for preserving active classroom records
+      allow delete: if false;
+    }
+  }
+}

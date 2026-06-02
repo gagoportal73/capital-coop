@@ -1,0 +1,77 @@
+{
+  "entities": {
+    "RoomState": {
+      "title": "RoomState",
+      "description": "The complete state of a financial simulator classroom sala.",
+      "type": "object",
+      "properties": {
+        "roomCode": {
+          "type": "string",
+          "description": "The code used by students to connect to this session."
+        },
+        "gameScreenState": {
+          "type": "string",
+          "description": "The current page view of the teacher/projector (setup, lobby, playing)."
+        },
+        "pairingMode": {
+          "type": "string",
+          "description": "Whether pairing is automatic (aleatorio) or manual."
+        },
+        "room": {
+          "type": "object",
+          "description": "The current month, collective funds, score, voting status etc."
+        },
+        "players": {
+          "type": "object",
+          "description": "The current state of players: balance, wellbeing, caps etc."
+        },
+        "logs": {
+          "type": "array",
+          "description": "The game feed logs showing transaction history."
+        },
+        "joinedAlumnos": {
+          "type": "object",
+          "description": "Status of players currently signed in with names."
+        },
+        "isGameOver": {
+          "type": "boolean",
+          "description": "Whether the game reached the final month and ended."
+        },
+        "alertMsg": {
+          "type": "string",
+          "description": "Warning notification msg displayed in the room."
+        },
+        "timerActive": {
+          "type": "boolean",
+          "description": "Whether the timer is active for the current month."
+        },
+        "showCierreReport": {
+          "type": "boolean",
+          "description": "Whether the monthly finance modal is visible."
+        },
+        "playersBefore": {
+          "type": "object",
+          "description": "Backup of players balances before computing results."
+        },
+        "logEntryForReport": {
+          "type": "object",
+          "description": "Report data to show inside the monthly breakdown."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "roomCode",
+        "gameScreenState"
+      ]
+    }
+  },
+  "firestore": {
+    "/rooms/{roomCode}": {
+      "schema": "RoomState",
+      "description": "Active game sessions indexed by classroom sala code."
+    }
+  }
+}
